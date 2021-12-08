@@ -66,6 +66,12 @@ GLOBAL.WatchSharedVariable = function(name, callback)
     table.insert(sharedvarlisteners[name], callback)
 end
 
+GLOBAL.StopWatchingSharedVariable = function(name, callback)
+    if GetTableSize(sharedvarlisteners[name]) > 0 then
+        table.removearrayvalue(sharedvarlisteners[name], callback)
+    end
+end
+
 GLOBAL.GetSharedVariable = function(name)
     return sharedvar[name]
 end

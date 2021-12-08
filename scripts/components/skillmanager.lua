@@ -15,7 +15,6 @@ function SkillManager:Learn(name)
             ModSkillList[name].onlearn(self.inst)
         end
         self.inst.replica.skillmanager:Learn(name)
-        self.inst:PushEvent("skilllearned", {name = name})
     end
 end
 
@@ -26,7 +25,6 @@ function SkillManager:Forget(name)
                 ModSkillList[name].onforget(self.inst)
             end
             self.inst.replica.skillmanager:Forget(name)
-            self.inst:PushEvent("skillforgot", {name = name})
         end
     else
         for name, v in pairs(self.learnedskills) do

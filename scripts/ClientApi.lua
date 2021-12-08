@@ -1,63 +1,66 @@
 GLOBAL.MakeUIDragable = function(name)
-    AddClassPostConstruct(
-        name,
-        function(self)
-            self.OnControl = function(self, control, down)
-                self:Dragable_OnControl(control, down)
-            end
+    local inject = function(self)
+        self.OnControl = function(self, control, down)
+            self:Dragable_OnControl(control, down)
+        end
 
-            function self:Dragable_OnControl(control, down)
-                if control == CONTROL_ACCEPT then
-                    if down then
-                        self:StartDrag()
-                    else
-                        self:EndDrag()
-                    end
+        function self:Dragable_OnControl(control, down)
+            if control == CONTROL_ACCEPT then
+                if down then
+                    self:StartDrag()
+                else
+                    self:EndDrag()
                 end
             end
+        end
 
-            function self:StartDrag()
-                if not self.followhandler then
-                    self.dragPosDiff = self:GetPosition() - TheInput:GetScreenPosition()
-                    self.followhandler =
-                        TheInput:AddMoveHandler(
-                        function(x, y)
-                            self:SetPosition(Vector3(x, y) + self.dragPosDiff)
-                        end
+        function self:StartDrag()
+            if not self.followhandler then
+                self.dragPosDiff = self:GetPosition() - TheInput:GetScreenPosition()
+                self.followhandler =
+                    TheInput:AddMoveHandler(
+                    function(x, y)
+                        self:SetPosition(Vector3(x, y) + self.dragPosDiff)
+                    end
+                )
+            end
+        end
+
+        function self:EndDrag()
+            if self.followhandler then
+                self.followhandler:Remove()
+            end
+            self.followhandler = nil
+            self.dragPosDiff = nil
+            local x, y, z = self:GetPosition():Get()
+            SNOWCORE.DATA["UIPosition"][name] = {x = x, y = y, z = z}
+            SNOWCORE.SAVEDATA()
+        end
+
+        self.inst:DoTaskInTime(
+            0,
+            function()
+                if SNOWCORE.DATA["UIPosition"][name] then
+                    print(
+                        SNOWCORE.DATA["UIPosition"][name].x,
+                        SNOWCORE.DATA["UIPosition"][name].y,
+                        SNOWCORE.DATA["UIPosition"][name].z
+                    )
+                    self:SetPosition(
+                        SNOWCORE.DATA["UIPosition"][name].x,
+                        SNOWCORE.DATA["UIPosition"][name].y,
+                        SNOWCORE.DATA["UIPosition"][name].z
                     )
                 end
             end
+        )
+    end
 
-            function self:EndDrag()
-                if self.followhandler then
-                    self.followhandler:Remove()
-                end
-                self.followhandler = nil
-                self.dragPosDiff = nil
-                local x, y, z = self:GetPosition():Get()
-                SNOWCORE.DATA["UIPosition"][name] = {x = x, y = y, z = z}
-                SNOWCORE.SAVEDATA()
-            end
-
-            self.inst:DoTaskInTime(
-                0,
-                function()
-                    if SNOWCORE.DATA["UIPosition"][name] then
-                        print(
-                            SNOWCORE.DATA["UIPosition"][name].x,
-                            SNOWCORE.DATA["UIPosition"][name].y,
-                            SNOWCORE.DATA["UIPosition"][name].z
-                        )
-                        self:SetPosition(
-                            SNOWCORE.DATA["UIPosition"][name].x,
-                            SNOWCORE.DATA["UIPosition"][name].y,
-                            SNOWCORE.DATA["UIPosition"][name].z
-                        )
-                    end
-                end
-            )
-        end
-    )
+    if type(name) == "string" then
+        AddClassPostConstruct(name, inject)
+    else
+        inject(name)
+    end
 end
 
 -----------------------------------------------------------------------------------------------------------------------------

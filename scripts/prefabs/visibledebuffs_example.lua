@@ -1,16 +1,14 @@
 local MakeVisibleDebuff = require("prefabs/visibledebuff_common")
 
 local example_debuff = {
-    -- 是否显示图标和文本
+    -- 不显示图标和文本
     noicon = false,
     -- buff图标
     bufficons = {
-        {
-            image_activate = "example_debuff_actived.tex",
-            altas_activate = "images/bufficons/example_debuff_actived.xml",
-            image_inactivate = "example_debuff.tex",
-            altas_inactivate = "images/bufficons/example_debuff.xml"
-        }
+        image_activate = "example_debuff_actived.tex",
+        altas_activate = "images/bufficons/example_debuff_actived.xml",
+        image_inactivate = "example_debuff.tex",
+        altas_inactivate = "images/bufficons/example_debuff.xml"
     },
     -- buff文本
     buffstrings = {
@@ -40,7 +38,7 @@ local example_debuff = {
     OnPercentDirty = function(inst)
         -- buff时间刷新
     end,
-    -- 死亡时移除
+    -- 死亡时保留
     keep_on_death = false,
     -- 退出时移除
     remove_on_despawn = false,

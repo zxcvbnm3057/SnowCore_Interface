@@ -10,6 +10,7 @@ local SkillManager =
             "learnskilldirty",
             function(inst)
                 local name = self.newlearn:value()
+                self.inst:PushEvent("skilllearned", {name = name})
                 if not TheNet:IsDedicated() and ModSkillList[name] then
                     if inst.HUD and inst.HUD.controls and inst.HUD.controls.VisibleSkillUI then
                         inst.HUD.controls.VisibleSkillUI:AddSkill(name, ModSkillList[name].ispassive)
@@ -26,6 +27,7 @@ local SkillManager =
             "forgetskilldirty",
             function(inst)
                 local name = self.newforget:value()
+                self.inst:PushEvent("skillforgot", {name = name})
                 if not TheNet:IsDedicated() and ModSkillList[name] then
                     if inst.HUD and inst.HUD.controls and inst.HUD.controls.VisibleSkillUI then
                         inst.HUD.controls.VisibleSkillUI:RemoveSkill(name, ModSkillList[name].ispassive)

@@ -3,17 +3,17 @@ local LevelManager =
 	function(self, inst)
 		self.inst = inst
 
-		self._exp = net_shortint(inst.GUID, "LevelManager._exp", "expdirty")
-		self._max_exp = net_shortint(inst.GUID, "LevelManager._max_exp", "maxexpdirty")
-		self._level = net_shortint(inst.GUID, "LevelManager._level", "leveldirty")
-		self._max_level = net_shortint(inst.GUID, "LevelManager._max_level", "maxleveldirty")
+		self._exp = net_shortint(inst.GUID, "LevelManager._exp", "onexpdirty")
+		self._max_exp = net_shortint(inst.GUID, "LevelManager._max_exp", "onmaxexpdirty")
+		self._level = net_shortint(inst.GUID, "LevelManager._level", "onleveldirty")
+		self._max_level = net_shortint(inst.GUID, "LevelManager._max_level", "onmaxleveldirty")
 
 		self._levelup = net_event(inst.GUID, "LevelManager._levelup")
 		if not TheNet:IsDedicated() then
 			inst:ListenForEvent(
 				"LevelManager._levelup",
 				function(inst)
-					inst:PushEvent("levelupdirty")
+					inst:PushEvent("onlevelupdirty")
 				end
 			)
 		end

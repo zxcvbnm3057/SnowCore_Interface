@@ -23,7 +23,7 @@ local CDManager =
 )
 
 function CDManager:IsReady(name)
-    return not self.cdqueue[name]
+    return self.cdqueue[name].cooldowntime_left <= 0
 end
 
 function CDManager:StartCooldown(name, data)
@@ -72,7 +72,7 @@ end
 CDManager.LongUpdate = CDManager.OnUpdate
 
 function CDManager:GetCDLeft(name)
-    return self.cdqueue[name].cooldowntime_left
+    return self.cdqueue[name].cooldowntime_left or 0
 end
 
 function CDManager:SetCDLeft(name, time)
@@ -84,7 +84,8 @@ function CDManager:GetQuantity(name)
 end
 
 function CDManager:CostQuantity(name, num)
-    self.cdqueue[name].quantity = self.cdqueue[name].quantity - num
+    self.cdqueue[name].quantity =
+        math.min(self.cdqueue[name].quantity_max, math.max(0, self.cdqueue[name].quantity - num))
 end
 
 function CDManager:Pause(name)

@@ -58,7 +58,7 @@ function LevelManager:SetLevelExp(levelmaxexp)
 end
 
 function LevelManager:ReCalcMaxExp()
-    self:SetLevelExp(self.getlevelexp(self.level))
+    self:SetLevelExp(self.getlevelexp(self.inst, self.level))
 end
 
 function LevelManager:GetCurrentLevel()
@@ -66,27 +66,29 @@ function LevelManager:GetCurrentLevel()
 end
 
 function LevelManager:SetLevel(level)
-    if level == 0 then
-        self.inst:PushEvent("resetlevel")
-        if self.onresetlevel then
-            self.onresetlevel()
-        end
-    else
-        self.inst:PushEvent("leveldelta", {oldlevel = self.level, newlevel = level})
+    if self.level ~= level then
+        if level == 0 then
+            self.inst:PushEvent("resetlevel")
+            if self.onresetlevel then
+                self.onresetlevel()
+            end
+        else
+            self.inst:PushEvent("levelup", {oldlevel = self.level, newlevel = level})
 
-        if self.onlevelup then
-            self.onlevelup(level)
+            if self.onlevelup then
+                self.onlevelup(level)
+            end
         end
+        self.level = level
+        self:ReCalcMaxExp()
     end
-    self.level = level
-    self:ReCalcMaxExp()
 end
 
 function LevelManager:SetMaxLevel(level)
     self.maxlevel = level
 end
 
-function LevelManager:SetLevelUpFn(fn)
+function LevelManager:SetLevelUp(fn)
     self.onlevelup = fn
 end
 
